@@ -1,0 +1,12 @@
+; (executable
+;  (name usefunctor)
+;  (libraries ounit2)
+;  (flags (:standard -w -32 -warn-error -32)))
+
+; (executable
+;  (name test_feather)
+;  (libraries ounit2))
+(executable
+ (name annotation_parameter)
+ (flags (:standard -w -32 -warn-error -32))
+)

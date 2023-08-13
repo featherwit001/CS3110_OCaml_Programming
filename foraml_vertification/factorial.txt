@@ -1,0 +1,61 @@
+let rec fact n =
+  if n = 0 then 1
+  else n * fact (n - 1)
+
+let rec facti acc i =
+  if n = 0 then acc
+  else facti (n * acc) (n - 1)
+
+let fact_tr n = facti 1 n
+
+Claim: forall n, fact n = fact_tr n
+
+Proof:
+  fact_trs n
+= {evaluation}
+  facti 1 n
+= {lemma with p := 1}
+  fact n
+QED.
+
+Claim: forall n, fact n = facti 1 n
+
+Proof: the lemma below with p := 1. QED. ********
+
+
+lemma: forall p, p * fact n = facti p n
+
+Proof: by induction on n,
+P(n) = forall p, p * fact n = facti p n
+
+Base case: n = 0
+Show: p * fact 0 = facti p 0
+
+  p * fact 0
+= {evaluation}
+  p
+= {evaluation}
+  facti p 0
+
+Inductive case: n = k + 1
+IH: P(k): p * fact k = facti p k
+Show: p * fact (k + 1) = facti p (k + 1)
+
+  p * fact (k + 1)
+= {evaluation}
+  p * (k + 1) * fact (k + 1 - 1)
+= {algebra}
+  p * (k + 1) fact k
+= {IH with p := p * (k + 1)} ********
+  facti (p*(k + 1)) k
+
+
+  facti p (k + 1)
+= {evaluation}
+  facti (p*(k + 1)) k
+
+QED.
+
+We are stuck! 
+What we want? (k + 1) fact 1 k = facti (k + 1) k
+Let's strenghten the IH. 

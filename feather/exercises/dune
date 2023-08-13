@@ -1,0 +1,33 @@
+; (executable
+;  (name usefunctor)
+;  (libraries ounit2)
+;  (flags (:standard -w -32 -warn-error -32)))
+
+; (executable
+;  (name fast_fibonacci )
+;  (flags (:standard -w -32 -warn-error -32)))
+
+; (executable
+;  (name takedrop)
+;  (libraries ounit2)
+;  (flags (:standard -w -32 -warn-error -32)))
+
+; (executable
+;  (name matrixs_tests)
+;  (libraries ounit2)
+;  (flags (:standard -w -32 -warn-error -32)))
+
+; (executable
+;  (name fractions)
+;  (libraries ounit2)
+;  (flags (:standard -w -32 -warn-error -32)))
+
+ (executable
+ (name bsts_test)
+ (libraries ounit2 qcheck)
+ (flags (:standard -w -32 -warn-error -32)))
+
+ ; (executable
+ ; (name qchecks)
+ ; (libraries ounit2 qcheck)
+ ; (flags (:standard -w -32 -warn-error -32)))

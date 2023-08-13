@@ -1,0 +1,7 @@
+**/_build/
+
+**/_coverage/
+
+**/bisect*
+
+yojson/

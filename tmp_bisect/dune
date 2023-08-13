@@ -1,0 +1,33 @@
+; (executable
+;  (name fractions)
+;  (libraries ounit2)
+;  (flags (:standard -w -32 -warn-error -32))
+;  (instrumentation
+;   (backend bisect_ppx)))
+
+; in the path of project root
+; dune exec --instrument-with bisect_ppx ./fractions.exe
+; bisect-ppx-report html
+; xdg-open _coverage/index.html
+; rm -rf bise*.coverage _coverage
+
+; (executable
+;  (name matrixs_tests)
+;  (libraries ounit2)
+;  (flags (:standard -w -32 -warn-error -32))
+;  (instrumentation
+;   (backend bisect_ppx)))
+
+; (executable
+;  (name leap_year)
+;  (libraries ounit2)
+;  (flags (:standard -w -32 -warn-error -32))
+;  (instrumentation
+;   (backend bisect_ppx)))
+
+(executable
+ (name bsts_test)
+ (libraries ounit2 qcheck)
+ (flags (:standard -w -32 -warn-error -32))
+ (instrumentation
+  (backend bisect_ppx)))

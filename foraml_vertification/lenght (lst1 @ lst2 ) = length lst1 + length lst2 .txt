@@ -1,0 +1,43 @@
+let rec length = function
+  | [] -> 0
+  | h :: t -> 1 + length t
+
+let rec ( @ ) lst1 lst2 = 
+  match lst1 with
+  | [] -> lst2
+  | h :: t -> h :: (t @ lst2)
+
+Claim: forall xs, ys, length (xs @ ys) = length xs + length ys
+
+Proof by induction on xs.
+P(xs) forall ys, length (xs @ ys) = length xs + length ys
+
+Base case: xs = []
+Show: forall ys, length([] @ ys) = length [] + length ys
+
+  length([] @ ys)
+={evaluation}
+  length ys
+
+  length [] + length ys
+={evaluation}
+  length ys
+
+
+Inductive case: xs = h :: t
+IH: length (t @ ys) = length t + length ys
+Show: forall ys, length((h :: t) @ ys) = length (h :: t) + length ys
+
+  length ((h :: t) @ ys)
+={evaluation}
+  length (h :: t @ ys)
+={evaluation with t = t @ ys as}
+  1 + length (t @ ys)
+
+ length (h :: t) + length ys
+={evaluation}
+ 1 + length t + length y
+={IH}
+ 1 + length(t @ ys)
+
+ QED.

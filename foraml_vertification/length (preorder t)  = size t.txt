@@ -1,0 +1,58 @@
+let rec size = function
+  | Leaf -> 0
+  | Node (l,v,r) -> 1 + size l + size r
+
+let rec preorder = function
+  | Leaf -> []
+  | Node(l,v,r) -> [v] @ preorder l @ preorder r
+
+let rec length = function
+  | [] -> 0
+  | h :: t -> 1 + length t
+
+Claim: forall t, length(preorder t) = size t
+
+
+Proof by induction on t.
+P(t) = length(preorder t) = size t
+
+Base case: t = Leaf
+Show: length (preorder Leaf) = size Leaf
+
+  length (preorder Leaf)
+={evaluation}
+  length []
+={evaluation}
+  0
+
+  size Leaf
+={evaluation}
+  0
+
+Inductive case: t = Node(l,v,r)
+IHl: length (preorder l) = size l
+IHr: length (preorder r) = size r
+Show: length (preorder t) = size t
+
+  length (preorder t)
+= {evaluation}
+  length ([v] @  preorder l @ preorder r)
+= {length distributes over @}
+  length [v] + length(preorder 1 @ preorder r)
+= {length distributes over @} 
+   length [v] + length (preorder 1)  + length (preorder r)
+= {with IHl and IHr}
+  length (v :: []) + size l + size r
+= {evaluation}
+  1 + length [] + size l + size r
+= {evaluation}
+  1 + 0 + size l + size r
+= {algebra}
+  1 + size l + size r
+
+  size Node(l,v,r)
+={evaluation}
+  1 + size l + size r
+
+QED.
+

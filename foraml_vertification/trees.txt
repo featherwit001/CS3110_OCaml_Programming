@@ -1,0 +1,54 @@
+type 'a tree = 
+  | Leaf
+  | Node of 'a tree * 'a * 'a tree
+
+let rec nodes = function
+  | Leaf -> 0
+  | Node (l, _, r) -> 
+    1 + nodes l + nodes r
+
+let rec leaves = function
+  | Leaf -> 1
+  | Node (l, _ ,r) -> 
+    leaves l + leaves r
+
+Claim: forall t, leaves t = 1 + nodes t
+
+Proof by induction on t.
+P(t) = leaves t = 1 + nodes t
+
+Base case, t = Leaf
+Show: leaves Leaf = 1 + nodes Leaf
+
+  leaves Leaf
+={evaluation}
+  1
+
+  1 + nodes Leaf
+={evaluation}
+  1 + 0
+={algebra}
+  1
+
+
+Inductive case: t = Node (l, v, r)
+IHl : P(l)= leaves l = 1 + nodes l
+IHr : P(r)= leaves r = 1 + nodes r
+Show: P(t)= leaves Node(l,v,r) = 1 + nodes Node(l,v,r)
+
+  leaes Node(l,v,r)
+={evaluation}
+  leaes l + leaes r
+={with IHl and IHr}
+  1 + nodes l + 1 + nodes r
+={algebra}
+  2 + nodes l + nodes r
+
+
+  1 + nodes Node(l,v,r)
+={evaluation}
+  1 + 1 + nodes l + nodes r
+={algebra}
+  2 + nodes l + nodes r
+
+QED.
