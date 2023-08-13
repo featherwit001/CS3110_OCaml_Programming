@@ -141,15 +141,19 @@ module Make (Ord: MyOrderType) =  struct
       else  
       if order < 0 then 
         let ll = add x data l in 
-        (* insert on the left child's left or right subtree*)
-        (* the node (k,d) is the lowest unbalanced node or balanced node *)
+        (* if new node inserted on the left child's left or right subtree*)
+        (* the node (k,d) maybe the lowest unbalanced node or balanced node *)
+        (* == depends on OCaml feather immutability. *)
         if l == ll then m else bal ll k d r 
       else 
         let rr = add x data r in
         (* insert on the right child's left or right subtree*)
         (* the node (k,d) is the lowest unbalanced node or balanced node *)
         if r == rr then m else bal l k d rr
-
+  
+  let rec clone = function
+    | Empty -> Empty
+    | Node {l;k;d;r;h} -> Node {l = clone l; k; d; r = clone r; h}
   let rec find x = function
     | Empty -> raise Not_found
     | Node {l; k; d; r; _} -> begin
@@ -184,7 +188,7 @@ module Make (Ord: MyOrderType) =  struct
   let rec remove_min_binding = function
     | Empty -> failwith "remove_min_binding"
     | Node {l = Empty; r; _} -> r
-    | Node {l; _} -> remove_min_binding l
+    | Node {l; k; d; r; _} -> bal (remove_min_binding l) k d r
   
   let merge t1 t2 = 
     match t1, t2 with

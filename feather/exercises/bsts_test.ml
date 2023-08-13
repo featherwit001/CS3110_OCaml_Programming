@@ -259,16 +259,101 @@ let tests_MyMap_normal = "tests_MyMap_normal"  >:::[
     assert_equal true (MyMap.is_AVL (MyMap.remove 10 map_tree8)));
 
 ]
-(* let make_tests_for_MyMap name input *)
+
+let rec from i j lst = if i <= j then from i (j - 1) (j :: lst) else lst
+let ( -- ) i j = from i j []
+
+let rec remove_sequence m = function
+  | [] -> m
+  | h :: t -> (remove_sequence (MyMap.remove h m) t)
+
+let tests_rm_seq_aux i j m n = 
+  let sequences = i -- j in
+  let add_sequences = List.map (fun x -> (x , string_of_int x)) sequences in
+  let map_large = add_sequence MyMap.empty add_sequences in
+
+  let remove_sequences = m -- n in
+  let map_rmed = remove_sequence map_large remove_sequences in
+  MyMap.is_AVL map_rmed
+
+
+let seed_array = [|123; 456; 789|] 
+let seed_custom = Random.State.make seed_array
+let rm_random_list i j m n =
+  let gen_random_int_list = QCheck.Gen.(list_size (int_range i j) (int_range m n)) in 
+  QCheck.Gen.(generate1 ~rand:seed_custom gen_random_int_list)
+
+let rm_random_seq1 = 
+  [68; 46; 43; 9; 48; 28; 80; 32; 47; 93; 98; 61; 
+   98; 46; 65; 71; 48; 69; 62; 43;88; 30; 43; 95; 
+   10; 60; 18; 38; 92; 39; 14; 28; 66; 93; 7; 93; 97; 5; 0]
+
+let tests_rm_random_seq_aux i j rm_seq = 
+    let sequences = i -- j in
+    let add_sequences = List.map (fun x -> (x , string_of_int x)) sequences in
+    let map_large = add_sequence MyMap.empty add_sequences in
+    if MyMap.is_AVL map_large = false then false
+    else 
+    let remove_sequences = rm_seq in
+    let map_rmed = remove_sequence map_large remove_sequences in
+    MyMap.is_AVL map_rmed
+
+let tests_MyMap_remove_seq = "tests_MyMap_remove_seq" >::: [
+  "add 0 - 10 rm 5 - 10" >:: (fun _ ->
+    assert_equal true (tests_rm_seq_aux 0 10 5 10));
+  "add 0 - 10 rm -5 - 5" >:: (fun _ ->
+    assert_equal true (tests_rm_seq_aux 0 10 (-5) 5));
+  "add 0 - 100 rm -5 - 50" >:: (fun _ ->
+      assert_equal true (tests_rm_seq_aux 0 100 (-5) 50));
+  "add -100 - 100 rm -50 - 50" >:: (fun _ ->
+      assert_equal true (tests_rm_seq_aux (-100) 100 (-50) 50));
+  "add 0-100 rm random from _0-100" >::(fun _ ->
+    assert_equal true (tests_rm_random_seq_aux (-100) 100 rm_random_seq1));
+]
+
+let random_add_remove_aux ?(bound_up_down=40) ?(min=(-20)) ?(max=20) () =
+  let seed_array = [|323892493|] in
+  let seed_custom = Random.State.make seed_array in
+  let gen_random_int_list = 
+    QCheck.Gen.(list_size (int_range 0 bound_up_down) (int_range min max)) in 
+  let list1 = QCheck.Gen.(generate1 ~rand:seed_custom gen_random_int_list) in
+  let list2 = QCheck.Gen.(generate1 ~rand:seed_custom gen_random_int_list) in
+  let map = add_sequence MyMap.empty (List.map (fun x -> (x, string_of_int x)) list1) in
+  let rec remove_step_by_step map = function
+    | [] -> (map, MyMap.Empty, list1, list2, 0)
+    | h :: t -> begin 
+      let origin_map = (MyMap.clone map) in
+      let map' = (MyMap.remove h map) in
+      if (MyMap.is_AVL map') = false then 
+        let _ = print_endline ("failwith remove " ^ (string_of_int h)) in
+      (map', origin_map, list1, list2, h)
+      else remove_step_by_step map' t
+    end
+  in 
+    remove_step_by_step map list2
+
+
+let tests_random_add_remove = "tests_random_add_remove" >::: [
+  "random_add_remove" >:: (fun _ -> (
+    let m1, _m2, addlst, rmlst, h = random_add_remove_aux () in
+    print_endline (string_of_list string_of_int addlst);
+    print_endline (string_of_list string_of_int rmlst);
+    print_endline ("when add h = " ^ (string_of_int h));
+    assert_equal true (MyMap.is_AVL m1)
+  ));
+]
+
 
 let all_tests_for_bst = "all_test_for_bst" >::: 
                                 (tests_is_bst @ tests_is_bst )
 
 let all_tests = "all_test" >::: [
-                                 (* tests_precaution_MyMap; *)
-                                 (* tests_MyMap_easy; *)
+                                 tests_precaution_MyMap;
+                                 tests_MyMap_easy;
                                  tests_MyMap_normal;
-                                 (* all_tests_for_bst; *)
+                                 tests_MyMap_remove_seq;
+                                 tests_random_add_remove;
+                                 all_tests_for_bst;
                                  ]  
                                  
 
@@ -285,3 +370,26 @@ let is_AVLq input=
 let qtest = QCheck.Test.make ~name:"AVL add" ~count:1000 arb is_AVLq
 
 let _ = QCheck_runner.run_tests  ~verbose:true [qtest]
+
+(* ------------------------------------------------ *)
+(* success *)
+let seq1000 = (-10000) -- 10000
+
+let addseq1000 = List.map (fun x -> (x, string_of_int x)) seq1000
+
+let map100_random_rm_is_AVL rm_ramdom_seq =
+  let map1000 = add_sequence MyMap.empty addseq1000 in
+  MyMap.is_AVL (remove_sequence map1000 rm_ramdom_seq)
+
+let gen_rm_seq = QCheck.Gen.(list_size (int_range 0 20000) (int_range (-10000) 10000))
+
+let arb_rm_seq = QCheck.make gen_rm_seq
+
+let qtests_map1000_random_rm = QCheck.Test.make ~name:"map1000 random rm" ~count:1000 
+                               arb_rm_seq map100_random_rm_is_AVL
+
+let _ = QCheck_runner.run_tests  ~verbose:true [qtests_map1000_random_rm]
+
+(* it takes me a lot of time to debug 
+   and find out that removing_min_binding forgets to balance.
+   but now all of tests are successful!*)

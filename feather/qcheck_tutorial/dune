@@ -1,3 +1,4 @@
  (executable
  (name double)
- (libraries qcheck))
+ (libraries qcheck)
+ (flags (:standard -w -32 -warn-error -32)))

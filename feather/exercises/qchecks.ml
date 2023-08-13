@@ -1,5 +1,5 @@
 let gen_list_length_5_10_from_0_to_100 = 
-    QCheck.Gen.(list_size (int_range 2 2) (int_range 0 100))
+    QCheck.Gen.(list_size (int_range 5 10) (int_range 0 100))
 
 let seed = Random.State.make_self_init ()
 let list1 = QCheck.Gen.(
