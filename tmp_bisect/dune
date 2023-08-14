@@ -25,9 +25,15 @@
 ;  (instrumentation
 ;   (backend bisect_ppx)))
 
+; (executable
+;  (name bsts_test)
+;  (libraries ounit2 qcheck)
+;  (flags (:standard -w -32 -warn-error -32))
+;  (instrumentation
+;   (backend bisect_ppx)))
+
 (executable
- (name bsts_test)
- (libraries ounit2 qcheck)
+ (name quick_test)
  (flags (:standard -w -32 -warn-error -32))
  (instrumentation
   (backend bisect_ppx)))
