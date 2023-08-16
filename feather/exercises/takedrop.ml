@@ -42,7 +42,7 @@ let rec drop n = function
           (test_fun n lst))
       end*)
 
-open OUnit2 
+open OUnit2
 
 let take_tests = "take_tests" >::: [
   "take 0 in []" >:: (fun _ -> assert_equal [] (take 0 []));

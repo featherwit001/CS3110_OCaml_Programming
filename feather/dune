@@ -6,7 +6,15 @@
 ; (executable
 ;  (name test_feather)
 ;  (libraries ounit2))
+
 (executable
  (name annotation_parameter)
+ (libraries ounit2 qcheck)
  (flags (:standard -w -32 -warn-error -32))
 )
+
+; (library
+;  (name compile_unit_stack)
+;  (libraries ounit2 qcheck)
+;  (flags (:standard -w -32 -warn-error -32))
+; )

@@ -1,5 +1,5 @@
 module type Map = sig
-  
+
   (** [('k, 'v ) t]  is the type of maps binding keys and values. *)
   type ('k, 'v ) t
 
@@ -49,7 +49,6 @@ end
   *)
 
 
-
   module ListMap : Map = struct
     (** AF: [[(k1, v1); (k2, v2); ...; (kn, vn)]] is the map {k1 : v1, k2 : v2,
         ..., kn : vn}. If a key appears more than once in the list, then in the
@@ -88,3 +87,38 @@ end
     (** Efficiency: O(n log n) + O(n) * O(n), which is O(n^2). *)
     let bindings m = List.map (binding m) (keys m)
   end
+
+
+let pp_string s = "\"" ^ s ^ "\""
+
+let pp_list pp_elt lst =
+  let pp_elts lst = 
+    let rec loop n acc = function
+      | [] -> acc
+      | [h] -> acc ^ (pp_elt h)
+      | h1 :: (_h2 :: _t as t') ->
+          if n = 100 then acc ^ "..." (*stop printing long list*)
+          else loop (n + 1) (acc ^ (pp_elt h1) ^ ";") t'
+    in loop 0 "" lst
+  in "[" ^ pp_elts lst ^ "]"
+
+let lst1 = [1; 2; 3; 4]
+let lst1_str = pp_string (pp_list string_of_int lst1)
+
+let () = print_endline lst1_str
+
+(* Ounit2 assert_equal has ?cmp 
+   using assert_equal with ~cmp:cmp_lists_like_sets*)
+let cmp_lists_like_sets lst1 lst2 =
+  let uniq1 = List.sort_uniq compare lst1 in
+  let uniq2 = List.sort_uniq compare lst2 in
+  List.length lst1 = List.length uniq1
+  &&
+  List.length lst2 = List.length uniq2
+  &&
+  uniq1 = uniq2
+
+
+
+
+(* In Ounit2,  *)
