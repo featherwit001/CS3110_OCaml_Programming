@@ -22,7 +22,14 @@
 ;  (flags (:standard -w -32 -warn-error -32))
 ; )
 
+; (executable
+;  (name refs)
+;  (flags (:standard -w -32 -warn-error -32))
+; )
+
+
 (executable
- (name refs)
+ (name maps_review_test)
+ (libraries ounit2)
  (flags (:standard -w -32 -warn-error -32))
 )

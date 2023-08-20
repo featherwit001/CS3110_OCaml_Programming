@@ -62,7 +62,7 @@ module Make (Ord: MyOrderType) =  struct
   type key = Ord.t
 
   type 'a t =  
-    |Empty 
+    | Empty 
     | Node of {l: 'a t; k: key; d: 'a; r: 'a t; h: int}
   
   let empty = Empty
@@ -174,7 +174,7 @@ module Make (Ord: MyOrderType) =  struct
     | Empty -> failwith "min_binding"
     | Node {l = Empty; k; d; _} ->  (k, d)
     | Node {l; _} -> min_binding l
-
+  
   let rec min_binding_opt = function
     | Empty -> None
     | Node {l = Empty; k; d; _} -> Some (k, d)

@@ -32,8 +32,15 @@
 ;  (instrumentation
 ;   (backend bisect_ppx)))
 
+; (executable
+;  (name quick_test)
+;  (flags (:standard -w -32 -warn-error -32))
+;  (instrumentation
+;   (backend bisect_ppx)))
+
 (executable
- (name quick_test)
+ (name maps_review_test)
+ (libraries ounit2)
  (flags (:standard -w -32 -warn-error -32))
  (instrumentation
-  (backend bisect_ppx)))
+  (backend bisect_ppx)))  

@@ -18,12 +18,18 @@
 ;  (libraries ounit2)
 ;  (flags (:standard -w -32 -warn-error -32)))
 
- (executable
- (name quick_test)
- (libraries ounit2 qcheck)
- (flags (:standard -w -32 -warn-error -32)))
+ ; (executable
+ ; (name quick_test)
+ ; (libraries ounit2 qcheck)
+ ; (flags (:standard -w -32 -warn-error -32)))
 
  ; (executable
  ; (name quick_test)
  ; (libraries ounit2)
  ; (flags (:standard -w -32 -warn-error -32)))
+
+ (executable
+ (name red_black_functor_test)
+ (libraries ounit2 qcheck)
+ (flags (:standard -w -32 -warn-error -32))
+)

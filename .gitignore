@@ -1,3 +1,6 @@
+*.cmo
+*.cmi
+
 **/_build/
 
 **/_coverage/
