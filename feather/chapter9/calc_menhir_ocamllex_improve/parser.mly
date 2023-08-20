@@ -29,5 +29,6 @@ expr:
 	| e1 = expr; MINUS; e2 = expr  { Binop (MINUS, e1, e2) }
 	| e1 = expr; DIV; e2 = expr  { Binop (DIV, e1, e2) }
 	| LPAREN; e = expr; RPAREN { e }
-	| MINUS INT %prec UMINUS { Int (-$2) }
+	| MINUS; f = FLOAT; %prec UMINUS { Float (-.f) }
+	| MINUS; i = INT; %prec UMINUS { Int (-i) }
 	;

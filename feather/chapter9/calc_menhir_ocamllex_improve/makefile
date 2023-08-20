@@ -52,7 +52,7 @@ main.byte :  $(obj_all_cmo)
 # this path depends on your own project structure
 # but the cal_test.test must in the /_build/defualt ... 
 test : cal_test main
-	../../_build/default/chapter9/calculator_menhir_ocamllex/cal_test.exe
+	../../_build/default/chapter9/calc_menhir_ocamllex_improve/cal_test.exe
 
 cal_test : cal_test.ml main
 	dune build
