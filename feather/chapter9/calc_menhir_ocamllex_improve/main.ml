@@ -73,5 +73,41 @@ let rec eval (e : expr) : expr =
 let interp (s: string) : string =
   s |> parse |> eval |> string_of_val
 
+(* error maybe could not get input in the caest mode *)
+let run () =
+  try
+    let lexbuf = Lexing.from_channel stdin in
+    while true do
+      lexbuf
+      |> My_parser.prog My_lexer.read
+      |> eval
+      |> string_of_val
+      |> print_endline
+      ;
+      flush stdout;
+    done
+  with My_lexer.Exit_calc ->
+    exit 0
 
+let rec run_once () =
+  while true do
+  print_string "<calc>:";
+  let input = read_line () in
+  (* print_string ("\"" ^ input ^ "\""); *)
+  try
+    let lexbuf = Lexing.from_string input in
+      lexbuf
+      |> My_parser.prog My_lexer.read
+      |> eval
+      |> string_of_val
+      |> print_endline    
+  with My_lexer.Exit_calc ->    exit 0
+      | _ -> print_endline "error, try again"; run_once () 
 
+  done
+
+let () =
+  if Array.length Sys.argv > 1 && Sys.argv.(1) = "--run" then
+    run_once ()
+  else
+    ()

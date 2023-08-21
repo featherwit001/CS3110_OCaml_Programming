@@ -1,6 +1,4 @@
 (* File calc.ml *)
-open Parser
-
 let _ =
   try
     let lexbuf = Lexing.from_channel stdin in

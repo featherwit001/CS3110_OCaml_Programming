@@ -2,4 +2,6 @@
  (name cal_test)
  (libraries ounit2)
  ; (flags (:standard -w -33 -warn-error -33))
+ (flags (:standard -w -32-33 ))
 )
+

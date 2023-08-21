@@ -1,6 +1,6 @@
 open OUnit2
 open Main
-
+open My_lexer
 let make_i n i s =
   n >:: (fun _ -> assert_equal (string_of_int i) (interp s)~printer:(fun x -> x))
 
@@ -29,6 +29,8 @@ let tests = [
   make_f "float minus neg" 22.0 "20.--2.";
   make_f "div"   2.5 "5 / 2";
   make_f "nested" 6.25 "10*(2/(5+3)*(7-4.5))";
+  "raise" >:: (fun _ -> assert_raises Exit_calc (fun _ -> (interp  "_exit")));
 ]
 
 let _ = run_test_tt_main ("suite" >::: tests)
+

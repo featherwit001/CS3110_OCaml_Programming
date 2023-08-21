@@ -21,6 +21,10 @@ and lacked a makefile. So, I referred to several projects and wrote a makefile m
 
 People studying this course can directly refer to all the files in this directory. Pay attention to the commands in the makefile, such as make utop, make all, and make clean, as well as the comments.
 
+### chapter9/calc_menhir_ocamllex_improved
+
+It is a calulator support type int and float, plus minus times dive and parentheses.
+In short, it is a basic arithmetic calculator.
 
 ## tmp_bisect fold
 

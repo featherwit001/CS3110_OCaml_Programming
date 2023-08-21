@@ -1,5 +1,6 @@
 {
   open My_parser
+  exception Exit_calc
 }
 
 let white = [' ' '\t']+
@@ -21,5 +22,6 @@ rule read =
   | "/" { DIV }
   | "(" { LPAREN }
   | ")" { RPAREN }
+  | "_exit" {raise Exit_calc}
   | eof { EOF }
 

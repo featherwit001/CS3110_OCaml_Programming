@@ -1,0 +1,3 @@
+#load "my_lexer.cmo";;
+#load "my_parser.cmo";;
+#use "main.ml";;

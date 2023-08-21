@@ -2,6 +2,7 @@ OCAMLC = ocamlc
 OCAMLC_FLAGS = -I +ounit2
 
 how_to_make = dune makefile
+how_to_use_utop = .ocamlinit
 SOURCES = lexer.mll parser.mly main.ml ast.ml cal_test.ml
 
 # in utop execuate 
@@ -9,9 +10,12 @@ SOURCES = lexer.mll parser.mly main.ml ast.ml cal_test.ml
 #load "my_parser.cmo";;
 #use "main.ml";;
 utop : my_lexer.cmo my_parser.cmo main.ml
-	utop
+	utop -init .ocamlinit
 
-all : main cal_test
+all : main cal_test calc.exe
+
+run : main
+	./main --run
 
 # in order to avoid the same name module in ocaml lib, 
 # add the prefix my_ 
