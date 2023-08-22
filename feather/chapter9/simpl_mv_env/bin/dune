@@ -1,0 +1,5 @@
+(executable
+ (name main)
+ (libraries interp)
+ ; (flags (:standard -w -33 -warn-error -33))
+ )

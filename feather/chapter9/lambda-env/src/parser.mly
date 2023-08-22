@@ -32,5 +32,5 @@ expr:
 
 simpl_expr:
 	| x = ID { Var x }
-  | LPAREN; e=expr; RPAREN { e } 
+
   ;

@@ -1,0 +1,9 @@
+(library
+ (name interp)
+ (flags (:standard -w -8 -warn-error -8-32))
+)
+
+(menhir
+ (modules my_parser))
+
+(ocamllex my_lexer)

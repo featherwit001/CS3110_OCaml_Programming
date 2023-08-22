@@ -30,12 +30,12 @@ let tests = [
        - [fun c -> c] in place of [2];
        and with the [let] expressions desugared to functions. *)
     "(fun x -> \
-     (fun f -> \
-     (fun x -> \
-     f (fun a -> a)) \
-     (fun c -> c)) \
-     (fun y -> x)) \
-     (fun b -> b)"
+        (fun f -> \
+          (fun x -> \
+              f (fun a -> a)) \
+                (fun c -> c)) \
+                (fun y -> x)) \
+                (fun b -> b)"
 ]
 
 let _ = run_test_tt_main ("suite" >::: tests)
