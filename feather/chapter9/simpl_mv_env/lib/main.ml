@@ -22,6 +22,13 @@ type env = value Env.t
 and value =
   | VInt of int
   | VBool of bool
+  | Closure of string * expr * env
+
+
+type scope_rule = Lexical | Dynamic
+
+let scope = ref Lexical
+
 
 (** The error message produced if binary operater and their operands
     do not have the correct type  *)
@@ -34,6 +41,12 @@ let unbound_var_err = "Unbound variable"
     have type [Bool] *)
 let if_guard_err = "Guard of if must have type Bool"
 
+(** The error message produced if   does not a function *)
+let apply_err = "not a function"
+
+let string_unable_to_print = "<abstr>"
+
+
 (** [eval_big env e] is the [v] such that <env, e> ==> v *)
 let rec eval (env : env) (e: expr) : value = match e with
   | Int i  -> VInt i
@@ -42,6 +55,21 @@ let rec eval (env : env) (e: expr) : value = match e with
   | Binop (bop, e1, e2) -> eval_bop env bop e1 e2 
   | Let (x, e1, e2) -> eval_let env x e1 e2
   | If (e1, e2, e3) -> eval_if env e1 e2 e3
+  | App (e1, e2) -> eval_app env e1 e2
+  | Fun (x, e) -> Closure (x, e, env)
+
+and eval_app env e1 e2 =
+  match eval env e1 with
+  | Closure (x, e, defenv) -> begin
+    let v2 = eval env e2 in
+    let base_env_for_body =
+      match !scope with
+      | Lexical -> defenv
+      | Dynamic -> env in
+      let env_for_body = Env.add x v2 base_env_for_body in
+      eval env_for_body e
+  end
+  | _ -> failwith apply_err
 
 (** [eval_var] *)
 and eval_var env x =
@@ -72,12 +100,15 @@ let string_of_val (e: value) : string =
   match e with
   | VInt i -> string_of_int i
   | VBool b -> string_of_bool b 
+  | _ -> string_unable_to_print
 
 let interp (s: string) : value =
   let e = parse s in
     eval empty_env e 
 
+
 (*-------------------[primitive version]---------------------------*)
+(*-------------------[     Discard     ]---------------------------*)
 
 (** [string_of_eval e] convert e to a string,
     requires [e] is a value *)
@@ -85,12 +116,13 @@ let string_of_eval (e: expr) : string =
   match e with
   | Int i -> string_of_int i
   | Bool b -> string_of_bool b
-  | Var _ | Binop _ | Let _ | If _ -> failwith "not a value"  
+  | Fun _ -> string_unable_to_print
+  | Var _ | Binop _ | Let _ | If _ | App _  -> failwith "not a value"  
   
 (** [is_value e] is whether [e] is a value *)
 let is_value : expr -> bool = function
-  | Int _ | Bool _ -> true
-  | Var _ | Binop _ | Let _ | If _  -> false
+  | Int _ | Bool _ | Fun _-> true
+  | Var _ | Binop _ | Let _ | If _| App _  -> false
 
 (** [subst e v x] is [e] with [v] substituted for [x], that is 
     e {v/x}
@@ -103,7 +135,8 @@ let rec subst e v x =
   | Binop (bop, e1, e2) -> Binop (bop, subst e1 v x, subst e2 v x)
   | Let (y, e1, e2) -> if x = y then Let (y, subst e1 v x, e2)
                                 else Let (y, subst e1 v x, subst e2 v x)  
-  | If (e1, e2, e3) -> If (subst e1 v x, subst e2 v x, subst e3 v x)   
+  | If (e1, e2, e3) -> If (subst e1 v x, subst e2 v x, subst e3 v x) 
+  | _ -> failwith "never to implement" 
 
 (** [step e] is a single step of evaluation of [e] *)
 let rec step : expr -> expr  = function
@@ -118,6 +151,8 @@ let rec step : expr -> expr  = function
   | Let (x, e1, e2) -> Let (x, step e1, e2)
   | If (e1, e2, e3) when is_value e1 -> step_if e1 e2 e3
   | If (e1, e2, e3) -> If (step e1, e2, e3)
+  | _ -> failwith "never to implement" 
+(* fun could not implemented lexical scope using step and substitute *)
 
 (** [step_if v e2 e3] return e2 or e3 
     Require [v] is Boolean value  *)

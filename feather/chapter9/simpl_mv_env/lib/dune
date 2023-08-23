@@ -1,6 +1,6 @@
 (library
  (name interp)
- (flags (:standard -w -8 -warn-error -8-32))
+ ; (flags (:standard -w -8 -warn-error -8-32))
 )
 
 (menhir
