@@ -106,12 +106,15 @@ let tests_fun = [
                                      else (fun y -> y * 2) 11";
   make_fun_i "if fun2"  10 "if 2 <= 3 then (fun y -> y + 1) 9 
                                      else (fun y -> y * 2) 11";
+  make_fun_i "fun alppy fun" 22 "let f1 = fun x -> x 11 in 
+                                    let f2 = fun x ->  x * 2 in
+                                        f1 f2" ;                                   
   make_fun_i  "fun lexical" 3 
                               "let y = 1 in 
                                   let f = fun x -> x + y in 
                                       let y = 2 in
                                       f  2 ";
-              
+        
   make_fun_c "reduce correct"
     "fun y -> y"
     "(fun x -> x) (fun y -> y)";
@@ -122,12 +125,12 @@ let tests_fun = [
         - [fun b -> b] in place of [1],
         - [fun c -> c] in place of [2];
         and with the [let] expressions desugared to functions. *)
-    "(fun x -> \
-        (fun f -> \
-          (fun x -> \
-              f (fun a -> a)) \
-                (fun c -> c)) \
-                (fun y -> x)) \
+    "(fun x -> 
+        (fun f ->
+          (fun x -> 
+              f (fun a -> a)) 
+                (fun c -> c)) 
+                (fun y -> x)) 
                 (fun b -> b)"
 ]
 

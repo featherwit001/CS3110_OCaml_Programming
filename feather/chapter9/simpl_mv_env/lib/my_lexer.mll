@@ -7,7 +7,7 @@ let white = [' ' '\t' '\n']+
 let digit = ['0'-'9']
 let int = digit+
 let letter = ['a'-'z' 'A'-'Z']
-let id = letter+
+let id = ['a'-'z' 'A'-'Z' '_']['a'-'z' 'A'-'Z' '0'-'9' '_']*
 
 rule read = 
   parse
@@ -28,7 +28,13 @@ rule read =
   | "else" { ELSE }
   | "->" { RARROW }
   | "fun"{ FUN }
+  | ";" { SEMICOLON }
+  | ";;" { DSEMICOLON }
+  | ":" { COLON }
+  | "int" { TINT }
+  | "bool" { TBOOL }
   | id { ID (Lexing.lexeme lexbuf) }
-  | "_exit" {raise  Exit_calc}
+  (* useless *)
+  (* | "_exit" {raise  Exit_calc} *)
   | eof { EOF }
 

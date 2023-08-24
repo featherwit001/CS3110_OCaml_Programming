@@ -6,6 +6,7 @@ type bop =
 
 (** The type of the abstract syntax tree (AST). *)
 type expr =
+  (* | Unit of unit *)
   | Var of string
   | Int of int
   | Bool of bool  (* false and true*)

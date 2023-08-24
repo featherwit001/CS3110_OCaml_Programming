@@ -126,7 +126,8 @@ let is_value : expr -> bool = function
 
 (** [subst e v x] is [e] with [v] substituted for [x], that is 
     e {v/x}
-    Example: subst (Var "x" + Var "y") v "x"  = v + Var "y" *)
+    Example: subst (Var "x" + Var "y") v "x"  = v + Var "y" 
+    Discard*)
 let rec subst e v x = 
   match e with
   | Var y -> if x = y then v else e
