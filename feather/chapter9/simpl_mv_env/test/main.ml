@@ -25,9 +25,10 @@ let make_b n b s =
 (** [make_errs n s] makes an OUnit test named [n] that expects
     [s] to fail type checking with error string [s']. *)
 let make_err n s' s =
-   n >:: (fun _ -> assert_raises (Failure s') (fun _ -> (interp s)))
+   n >:: (fun _ -> assert_raises (TypeError s') (fun _ -> (interp s)))
 
-let tests = [
+
+let tests_bnop = [
   make_i "int" 22 "22";
   make_i "add" 22 "11+11";
   make_i "adds" 33 "11 + 11 + 11";
@@ -45,7 +46,9 @@ let tests = [
   make_b "false" false "false";
   make_b "leq" true "10<=22";
   make_b "leq" false "22<=10";
+]   
 
+let tests_let_if = [
   make_i "let" 22 "let x = 22 in x";
   make_i "letlet x" 22 "let x = 11 in let x = 22 in x";
   make_i "letlet xy" 22 "let x = 11 in let y = x in y + y";
@@ -64,12 +67,16 @@ let tests = [
   make_i "letiflet" 5 "let x = 3 in 
                             if x <= 4 then let y = 2 in x + y
                                       else let z = 5 in x + z";
+]
+
+let tests_err = [
   make_err "ty plus" bop_err "1+true";
   make_err "ty mult" bop_err "1 * false";
   make_err "ty leq" bop_err "true <= 1";
   make_err "if_guard" if_guard_err "if 1 then 2 else 3";
   make_err "unbound" (unbound_var_err ^" x") "x";
 ]
+
 
 let code_part = function
   |  (Closure (x, e, _)) -> Fun (x, e)
@@ -134,5 +141,33 @@ let tests_fun = [
                 (fun b -> b)"
 ]
 
+(* without fun and apply *)
+let tests_typecheck =  [
+  make_i "let" 22 "let x : int = 22 in x";
+  make_i "letlet x" 22 "let x : int = 11 in let x : int = 22 in x";
+  make_i "letlet xy" 22 "let x : int = 11 in let y : int = x in y + y";
+  make_i "letetlet xyz" 4 "let x : int = 1 in 
+                              let y : int = 0 in 
+                                  let z :int = 3 in 
+                                  x + y + z" ;
+  make_i "if f" 0 "if false then 22 else 0";
+  make_i "if f" 22 "if true then 22 else 0";
+  make_i "if2" 10 "if 4<=2 then 22 else 10";
+  make_i "if3" 22 "if 1+2<=3+4 then 22 else 0";
+  make_i "ifif1" 22 "if 1+2 <= 4 then if 9<=1+2 then 0 else 22 else 9";
+  make_i "ifif1" 22 "if 3+2 <= 4 then 9 else if 9<=1+2 then 0 else 22";
+  make_i "iflet" 22 "if 1+2 <=3*4 then let x : int = 22 in x else 0" ;
+  make_i "letif" 22 "let x : bool  = 1+2 <=3*4 in if x then 22 else 0";
+  make_i "ifletif" 10 "if true 
+                        then let x :int = 3 in if x <= 4 then 10 else 22
+                        else let x:int  = 5 in if x <= 4 then 12 else 24";
+  make_i "letiflet" 5 "let x:int = 3 in 
+                            if x <= 4 then let y :int = 2 in x + y
+                                      else let z :int = 5 in x + z";
+  
+]
+ 
 
-let _ = run_test_tt_main ("suite" >:::  tests @ tests_fun)
+let all_tests = "suite all tests" >::: tests_bnop @ tests_let_if @ tests_fun @ tests_err
+
+let _ = run_test_tt_main ( "suite" >::: (tests_bnop @ tests_typecheck @ tests_err ))

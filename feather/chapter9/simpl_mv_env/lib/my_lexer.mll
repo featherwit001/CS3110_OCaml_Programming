@@ -31,8 +31,8 @@ rule read =
   | ";" { SEMICOLON }
   | ";;" { DSEMICOLON }
   | ":" { COLON }
-  | "int" { TINT }
-  | "bool" { TBOOL }
+  | "int" { INT_TYPE }
+  | "bool" { BOOL_TYPE }
   | id { ID (Lexing.lexeme lexbuf) }
   (* useless *)
   (* | "_exit" {raise  Exit_calc} *)
