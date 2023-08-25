@@ -1,0 +1,131 @@
+[Language definition]:
+
+e ::= n | i | b
+	| if e1 then e2 else e3
+	| fun x -> e
+	| e1 e2
+
+n ::= x | bop
+bop ::= ( + ) | ( * ) | ( <= )
+
+t ::= 'x | int | bool | t1 -> t2
+
+
+
+[CONSTANTS]:
+
+Rule: env |- i : int -| {}
+Rule: env |- b : bool -| {}
+
+Examples:
+{} |- 3110 : int -| {}
+{} |- true : bool -| {}
+
+
+[Names]:
+
+Rule: env |- n : env(v) -| {}
+
+Examples:
+{x : int} |- x : int -| {}
+{} |/- x
+{( + ) : int -> int -> int} |- ( + ) : int -> int -> int -| {}
+
+Initial static environment
+( + ) : int -> int -> int
+( * ) : int -> int -> int
+( <= ) : int -> int -> bool
+
+
+[IF]:
+
+env |- if e1 then e2 else e3 : 't -| C1, C2, C3, C
+	if fresh 't
+	and env |- e1 : t1 -| C1
+	and env |- e2 : t2 -| C2
+	and env |- e3 : t3 -| C3
+	and C = {t = bool, 't = t2, 't = t3}
+
+Example:
+{} |- if true then 0 else 1 : 'a -| { 'a }
+	{} |- true : bool -| {}
+	{} |- 0 : int -| {}
+	{} |- 1 : int -| {}
+	C = {bool = bool, 'a = int, 'a = int}
+
+
+[FUNCTIONS]:
+
+Rule: 
+env |- fun x -> e : 't1 -> t2 -| C
+	if fresh 't1
+	and env, x : 't1 |- e : t2 -| C
+
+'t1 is introduced by paramenter x
+t2 is produced by function body e 
+
+
+Example: 
+{} |- fun x -> if x then 1 else 0 : 'a -> 'b -| {'a = bool, 'b = int}
+	{x : 'a} |- if x then 1 else 0 : 'b -| {'a = bool, 'b = int}
+		{x : 'a} |- x : 'a -| {}
+		{x : 'a} |- 1 : int -| {}
+		{x : 'a} |- 0 : int -| {}
+		C = {'a = bool, 'b = int, 'b = int}
+
+how to deal with : down and up 
+	the fun paramenter is assigned a brand new 't1, and then  
+	the fun body is a expression and produce a constraint C  to the whole fun-expr
+
+	the fun body is If-expr with another solution 
+	which is still down with branch new type name 't 
+	           and up with another constraint to the whole if-expr
+	
+	collect the constraints
+
+
+[APPLICATION]:
+
+Rule 
+env |- e1 e2 : 't -| C1, C2, C
+	if fresh 't
+	and env |- e1 : t1 -| C1 
+	and env |- e2 : t2 -| C2
+	and C = {t1 =  t2 -> 't}
+
+Example:
+  I	|- ( + ) 1 : 'a -| { int -> int -> int = int -> 'a}
+	I |- ( + ) : int -> int -> int -| {}
+	I |- 1 : int -| {}
+	C = { int -> int -> int = int -> 'a} 
+
+
+[NAIVE LET]:
+
+Rule:
+env |- let x = e1 in e2 : t2 -| C1, C2
+	if env |- e1 : t1 -| C1
+	and env, x : t1 |- e2 : t2 -| C2
+ 
+Example:
+{} |- let x = 42 in x : int -| {}
+	{} |- 42 : int -| {}
+	{x : int} |- x: int -| {}
+
+
+[LET]:
+env |- let x = e1 in e2 -| C1, C2
+	if env |- e1 : t1 -| C1
+	and  generalize (C1, env, x : t1) |- e2 : t2 -| C2
+
+	generalize type to type scheme 'a . 'a -> 'a 
+
+[Name]:
+env |- n : instantiate(env(n)) -| {}
+
+	instantiate type with new type variables
+	for exampel, let id = fun x -> x
+	generalize it as 'a . 'a -> 'a
+	when it comes to id 0, instantiate it as 'b -> 'b
+	when it comes to id ture, instaiate it as 'c -> 'c
+	but how to use these rule to infer? or what is generalize and instantiate?

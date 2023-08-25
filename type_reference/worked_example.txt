@@ -1,0 +1,134 @@
+fun f -> fun x -> f (( + ) x 1)
+
+
+I |- fun f -> fun x -> f (( + ) x 1) : 'a -> 'b -> 'e -| C3, C2, C1
+	I, f:'a |- fun x -> f (( + ) x 1) : 'b -> 'e -| C3, C2, C1
+		I, f:'a, x:'b |- f (( + ) x 1) : 'e -| C3, C2, C1 
+			I, f:'a, x:'b |- f : 'a -| {}
+			I, f:'a, x:'b |- (( + ) x) 1 : 'd -| C2, C1
+			 	I, f:'a, x:'b |- ( + ) x : 'c -| C1
+					I, f:'a, x:'b |- ( + ) : int -> int -> int -| {}
+					I, f:'a, x:'b |- x : 'b -| {}
+					C1 =  {int -> int -> int  =  'b -> 'c }
+				I, f:'a, x:'b |- 1 : int -| {}
+				C2 = { 'c = int -> 'd}
+			C3 = { 'a = 'd -> 'e }
+
+C3, C2, C1 = 'a = 'd -> 'e, 'c = int -> 'd	,int -> int -> int  =  'b -> 'c
+
+---------
+three constraints:
+(1) 'a = 'd -> 'e
+(2) 'c = int -> 'd
+(3) int -> int -> int = 'b -> 'c
+
+use (1) as a substitution:
+{'d -> 'e / 'a}
+but the rest of constraints don't have 'a,
+so remove constraint (1) directly,
+get a substitution into the sequences
+	S1 = {'d -> 'e / 'a}
+
+-------------
+rest of constraints:
+(2) 'c = int -> 'd
+(3) int -> int -> int = 'b -> 'c
+
+use (2) as a substitution:
+{int -> 'd / 'c}
+constraint (3) turned into
+(3) int -> int -> int = 'b -> int -> 'd
+
+and then remove constraint (2)
+get a substitution into the sequences:
+	S1 = {'d -> 'e / 'a}; S2 = {int -> 'd / 'c}
+
+-------------
+rest of constraints: (3)is turned into (3') but annotated to (3)
+(3) int -> int -> int = 'b -> int -> 'd
+
+there is not an avaiable substitution,
+get two equations form (3)
+(4) int = 'b
+(5) int -> int = int -> 'd
+
+so remove (3)
+
+----------------
+the rest of constraints:
+(4) int = 'b
+(5) int -> int = int -> 'd
+
+use (4) as a substitution:
+{int / 'b},but there is not 'b in any other equations,
+so add it into the substitution sequences:
+	S1 = {'d -> 'e / 'a}; S2 = {int -> 'd / 'c}
+	S3 = {int / 'b};
+and remove (3)
+
+-------------------
+the rest of constraints
+(5) int -> int = int -> 'd
+
+get two equations from (5):
+(6) int = int
+(7) int = 'd 
+remove (5)
+
+----------------
+the rest of constraints:
+(6) int = int
+(7) int = 'd 
+
+(6) is not an interested equation, 
+because its left and right are identical.
+remove it directly.
+
+----------------
+the rest of constraints:
+(7) int = 'd 
+
+get a substitution from (7):
+{int / 'd}
+there is not any eqaution which could be substituted,
+so add it into substitution sequences:
+	S1 = {'d -> 'e / 'a}; S2 = {int -> 'd / 'c}
+	S3 = {int / 'b}; S4 = {int / 'd}
+and remove (7)
+
+------------
+the rest of constraint
+empty
+
+-------
+substitution algorithm end.
+
+We get the substitution sequences:
+	S1 = {'d -> 'e / 'a}; S2 = {int -> 'd / 'c}
+	S3 = {int / 'b}; S4 = {int / 'd}
+and then apply to the type of fun f -> fun x -> f (( + ) x 1):
+	'a -> 'b -> 'e
+
+step1: apply S1, 
+	add parentheses between the replaced entity,
+	when the subsitute is function type.
+	
+	('d -> 'e) -> 'b -> 'e
+	S2 S3 S4
+
+step2: apply S2, but there is not 'c, just skip it
+
+step3: apply S3, not need to add parentheses
+	('d -> 'e) -> int -> 'e
+
+step4: apply S4, not need to add parentheses 
+	(int -> 'e) -> int -> 'e
+
+almost complete, and rename 'e tp 'a for rationality.
+step 5: rename type variables starting from 'a
+	(int -> 'a) -> int -> 'a
+
+So fun f -> fun x -> f (( + ) x 1) : (int -> 'a) -> int -> 'a
+
+
+

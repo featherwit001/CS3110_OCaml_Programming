@@ -1,0 +1,53 @@
+(1) 'x -> ('x -> int) = int -> 'y
+(2) 'x -> 'x = 'y
+
+1st:
+
+get a substitution form (2):
+{'x -> 'x / 'y}
+
+Substitute (1) with {'x -> 'x / 'y}, solve (1) (2):
+(3) 'x -> ('x -> int) = int -> ('x -> 'x)
+
+get two equations form (3), solve (3), get(4) (5):
+(4) 'x = int
+(5) 'x -> int = 'x -> 'x
+
+get a substitution from (4):
+{int / 'x}
+
+substitute (5) with {int / 'x}, solve (4) (5), get (6):
+(6) int -> int = int -> int 
+
+get two equations form (6), solve(6), get two identity equations
+int = int 
+int = int
+
+
+
+{'x -> 'x / 'y} ;{int / 'x}
+DONE
+
+---------
+2nd attempt:
+
+(1) 'x -> ('x -> int) = int -> 'y
+(2) 'x -> 'x = 'y
+
+get two equations form (1), solve (1), get (3)(4):
+(3)	'x = int
+(4) 'x -> int = 'y
+
+get a substitution form (3):
+{int / 'x}
+
+substitute (4) with {int / 'x}, solve (3) (4), get (5):
+(5) int -> int = 'y
+
+get a substitution from (5):
+{int -> int / 'y}
+
+
+{int / 'x} ; {int -> int / 'y}
+
+DONE
