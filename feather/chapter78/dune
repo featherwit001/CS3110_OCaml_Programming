@@ -28,8 +28,15 @@
 ; )
 
 
+; (executable
+;  (name maps_review_test)
+;  (libraries ounit2)
+;  (flags (:standard -w -32 -warn-error -32))
+; )
+
+
 (executable
- (name maps_review_test)
- (libraries ounit2)
- (flags (:standard -w -32 -warn-error -32))
+ (name sequences)
+ ; (libraries ounit2)
+ (flags (:standard -w -32-34-37 -warn-error -32-34))
 )

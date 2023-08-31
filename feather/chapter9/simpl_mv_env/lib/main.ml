@@ -190,6 +190,7 @@ let string_of_val (e: value) : string =
 
 let interp (s: string) : value =
   let e = parse s in
+  (* remove typecheck test/main.ml could run all_tests *)
   ignore(typecheck e);
   eval empty_env e 
 

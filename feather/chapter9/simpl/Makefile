@@ -4,7 +4,7 @@ build:
 utop:
 	dune utop src
 
-.PHONY: test
+.PHONY: test clean
 test:
 	dune exec test/main.exe
 

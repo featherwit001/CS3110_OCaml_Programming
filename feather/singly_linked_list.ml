@@ -8,6 +8,9 @@ type 'a node = {
   (* "mutable x :  int" is equivalent to "x : int ref".
     In Order to simplify the type of x so we prefer to use "mutable".*)
   (* a node need to end at a null like Java. so use option to do that *)
+  (* Note that mutable is a property of the field, 
+                            rather than the type of the field. 
+     In particular, we write mutable field : type, not field : mutable type. *)
   mutable next : 'a node option;
 }
 
