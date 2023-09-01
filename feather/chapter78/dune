@@ -35,8 +35,24 @@
 ; )
 
 
+; (executable
+;  (name sequences)
+;  ; (libraries ounit2)
+;  (flags (:standard -w -32-34-37 -warn-error -32-34))
+; )
+
+
+; (executable
+;  (name lwt_examples)
+;  (libraries lwt lwt.unix)
+;  (flags (:standard -w -32-33-34-37 -warn-error -32-34))
+; )
+
+
+; (executable
+;  (name read2)
+;  (libraries lwt.unix))
+
 (executable
- (name sequences)
- ; (libraries ounit2)
- (flags (:standard -w -32-34-37 -warn-error -32-34))
-)
+ (name read3)
+ (libraries lwt.unix lwt_ppx))
