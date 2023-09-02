@@ -77,12 +77,13 @@ module Promises : PROMISE = struct
 
   let state p = p.state
 
+  (** requires: [st] may not be [Pending] *)  
   let resolve_or_reject (r : 'a resolver) (st : 'a state) =
-  assert (st <> Pending);
-  let handlers = r.handlers in 
-  r.handlers <- [];
-  write_once r st;
-  List.iter (fun f -> f st) handlers
+    assert (st <> Pending);
+    let handlers = r.handlers in 
+    r.handlers <- [];
+    write_once r st;
+    List.iter (fun f -> f st) handlers
   
   let resolve r x = 
     resolve_or_reject r (Resolved x)
@@ -90,12 +91,15 @@ module Promises : PROMISE = struct
   let reject r  e = 
     resolve_or_reject r (Rejected e)
   
+  (* there is still a arg  to be filled *)
   let handler (resolver: 'a resolver) : 'a handler 
     = function 
     | Pending -> failwith "handler RI violated"
     | Rejected exc -> reject resolver exc
     | Resolved x -> resolve resolver x
 
+  (* there is still a new arg i.e. promise.state 
+     the function type signature warps 'a state -> unit to 'a handler*)
   let handler_of_callback
       (callback : 'a -> 'b promise)
       (resolver : 'b resolver)
@@ -103,12 +107,14 @@ module Promises : PROMISE = struct
     = function
      | Pending -> failwith "handler RI violated"
      | Rejected exc -> reject resolver exc
-     | Resolved x -> 
+     | Resolved x ->  
+      (* in ( >>= )  if the [p] is resolved , apply the [c] to [x] of [p]*)
       let promise = callback x in
       match promise.state with
       | Resolved y -> resolve  resolver y
       | Rejected exc -> reject resolver exc
-      | Pending -> enquene (handler resolver) promise
+      | Pending -> enquene (handler resolver) promise  
+      (* who can touch p2' = c1 x1 ? none. the resolver must be trigger by bind user*)
 
   let ( >>= ) 
       (input_promise: 'a promise)
