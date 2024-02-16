@@ -132,7 +132,7 @@ module HashMap: TableMap = struct
     mutable size : int;
     mutable buckets : ('k * 'v) list array;
   }
-
+ 
   let capacity tab =
     Array.length tab.buckets
 
@@ -196,7 +196,7 @@ module HashMap: TableMap = struct
       size = 0;
       buckets = Array.make capacity [];
     }
-  
+
   let of_list hash lst =
     let tab = create hash (List.length lst) in 
     List.iter (fun (k, v) -> insert k v tab) lst;

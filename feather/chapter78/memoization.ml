@@ -11,7 +11,7 @@ let fibm n =
 
 
 (* store the result of f x *)
-let memo f = 
+let memo f =  
   let h = Hashtbl.create 16 in 
   fun x -> 
     try Hashtbl.find h x
@@ -46,7 +46,7 @@ let fib_memo =
 (* for iterator *)
 let memo_iter f = 
   let h = Hashtbl.create 16 in
-  let g x = 
+  let g x =   
     try Hashtbl.find h x 
     with Not_found ->
       let y = f x in

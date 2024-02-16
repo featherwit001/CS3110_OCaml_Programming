@@ -103,7 +103,8 @@ module Promises : PROMISE = struct
   let handler_of_callback
       (callback : 'a -> 'b promise)
       (resolver : 'b resolver)
-      : 'a handler
+      (* ie a state -> unit to 'a handler *)
+      : 'a handler 
     = function
      | Pending -> failwith "handler RI violated"
      | Rejected exc -> reject resolver exc
